@@ -9,10 +9,12 @@
 # Description:       Druid Coordinator Node
 ### END INIT INFO                                                                                                                            
 
+HADOOP_CONF_DIR="<%= scope.lookupvar("::#{@module_name}::hadoop_confdir") %>"
+
 DRUID_HOME="<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid"
 DRUID_CONFIG="<%= scope.lookupvar("::#{@module_name}::config_dir") %>"
 DRUID_JAVA_OPTS="<%= @jvm_opts.join(' ') %>"
-DRUID_JAVA_CLASSPATH="${DRUID_HOME}/lib/*:${DRUID_CONFIG}/coordinator"
+DRUID_JAVA_CLASSPATH="${DRUID_HOME}/lib/*:${DRUID_CONFIG}/coordinator:${HADOOP_CONF_DIR}"
 
 JAVA_HOME=/usr
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin

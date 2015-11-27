@@ -576,6 +576,18 @@ class druid (
 
   ensure_packages(['wget', $java_pkg])
 
+  case "${::osfamily}-${::operatingsystem}" {
+    /RedHat-Fedora/: {
+      $hadoop_confdir = '/etc/hadoop'
+    }
+    /Debian|RedHat/: {
+      $hadoop_confdir = '/etc/hadoop/conf'
+    }
+    default: {
+      fail("${::osfamily} (${::operatingsystem}) not supported")
+    }
+  }
+  
   Exec {
     path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
   }

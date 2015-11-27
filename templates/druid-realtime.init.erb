@@ -9,6 +9,8 @@
 # Description:       Druid Realtime Node
 ### END INIT INFO                                                                                                                            
 
+HADOOP_CONF_DIR="<%= scope.lookupvar("::#{@module_name}::hadoop_confdir") %>"
+
 DRUID_HOME="<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid"
 DRUID_CONFIG="<%= scope.lookupvar("::#{@module_name}::config_dir") %>"
 DRUID_JAVA_OPTS="<%= @jvm_opts.join(' ') %>"
