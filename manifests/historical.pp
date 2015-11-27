@@ -250,5 +250,6 @@ class druid::historical (
   druid::service { 'historical':
     config_content  => template("${module_name}/historical.runtime.properties.erb"),
     service_content => template("${module_name}/druid-historical.service.erb"),
+    init_content => template("${module_name}/druid-historical.init.erb"),
   }
 }

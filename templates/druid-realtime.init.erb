@@ -1,0 +1,78 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          druid-realtime
+# Required-Start:    $network $named $remote_fs $syslog
+# Required-Stop:     $network $named $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: druid realtime
+# Description:       Druid Realtime Node
+### END INIT INFO                                                                                                                            
+
+DRUID_HOME="<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid"
+DRUID_CONFIG="<%= scope.lookupvar("::#{@module_name}::config_dir") %>"
+DRUID_JAVA_OPTS="<%= @jvm_opts.join(' ') %>"
+DRUID_JAVA_CLASSPATH="${DRUID_HOME}/lib/*:${DRUID_CONFIG}/realtime"
+DRUID_LOG="/var/log/druid/druid-realtime.log"
+
+JAVA_HOME=/usr
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON=$JAVA_HOME/bin/java
+DAEMON_OPTS="${DRUID_JAVA_OPTS} -classpath ${DRUID_JAVA_CLASSPATH} io.druid.cli.Main server realtime"
+NAME="druid-realtime"
+DESC="druid realtime"
+PIDFILE="/var/run/druid/${NAME}.pid"
+
+mkdir -p `dirname $PIDFILE`
+
+[ -r /etc/default/druid ] && . /etc/default/druid
+
+. /lib/lsb/init-functions
+
+reload_druid_daemon() {
+	start-stop-daemon --stop --quiet --signal HUP --pidfile $PIDFILE 
+}
+
+start_druid_daemon() {
+    start-stop-daemon --start --background --quiet --make-pidfile --pidfile $PIDFILE --startas $DAEMON -- $DAEMON_OPTS
+}
+
+stop_druid_daemon() {
+	start-stop-daemon --stop --retry TERM/10/KILL/5 --quiet --oknodo --pidfile $PIDFILE
+}
+
+status_druid_daemon() {
+	status_of_proc -p "${PIDFILE}" "${DAEMON}" "${NAME}"
+}
+
+case "$1" in
+    start)
+	log_begin_msg "Starting $DESC"
+	start_druid_daemon
+	log_end_msg $?
+	;;
+    stop)
+	log_begin_msg "Stopping $DESC"
+	stop_druid_daemon
+	log_end_msg $?
+	;;
+    reload)
+    	log_begin_msg "Reloading $DESC"
+        reload_druid_daemon
+    	log_end_msg $?
+    	;;
+    status)
+        status_druid_daemon
+	;;
+    restart|force-reload)
+	log_begin_msg "Restarting $DESC"
+	stop_druid_daemon
+	start_druid_daemon
+	log_end_msg $?
+	;;
+  *)
+	echo "Usage: $0 {start|stop|status|restart|force-reload|reload}" >&2
+	exit 1
+	;;
+esac
+

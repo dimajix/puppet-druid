@@ -311,5 +311,6 @@ class druid::broker (
   druid::service { 'broker':
     config_content  => template("${module_name}/broker.runtime.properties.erb"),
     service_content => template("${module_name}/druid-broker.service.erb"),
+    init_content => template("${module_name}/druid-broker.init.erb"),
   }
 }

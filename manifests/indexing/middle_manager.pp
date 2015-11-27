@@ -236,5 +236,6 @@ class druid::indexing::middle_manager (
   druid::service { 'middle_manager':
     config_content  => template("${module_name}/middle_manager.runtime.properties.erb"),
     service_content => template("${module_name}/druid-middle_manager.service.erb"),
+    init_content => template("${module_name}/druid-middle_manager.init.erb"),
   }
 }

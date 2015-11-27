@@ -23,6 +23,7 @@
 define druid::service (
   $config_content,
   $service_content,
+  $init_content,
   $service_name = $title,
 ) {
   require druid
@@ -49,22 +50,41 @@ define druid::service (
     ],
   }
 
-  file { "/etc/systemd/system/druid-${service_name}.service":
-    ensure  => file,
-    content => $service_content,
-    notify  => Exec["Reload systemd daemon for new ${service_name} service file"],
-  }
-
-  exec { "Reload systemd daemon for new ${service_name} service file":
-    command     => '/bin/systemctl daemon-reload',
-    refreshonly => true,
-  }
-
-  service { "druid-${service_name}":
-    ensure    => running,
-    enable    => true,
-    provider  => 'systemd',
-    require   => File["/etc/systemd/system/druid-${service_name}.service"],
-    subscribe => Exec["Reload systemd daemon for new ${service_name} service file"],
+  case "${::osfamily}-${::operatingsystem}" {
+    /RedHat/: {
+      file { "/etc/systemd/system/druid-${service_name}.service":
+        ensure  => file,
+        content => $service_content,
+        notify  => Exec["Reload systemd daemon for new ${service_name} service file"],
+      }
+      exec { "Reload systemd daemon for new ${service_name} service file":
+        command     => '/bin/systemctl daemon-reload',
+        refreshonly => true,
+      }
+      service { "druid-${service_name}":
+        ensure    => running,
+        enable    => true,
+        provider  => 'systemd',
+        require   => File["/etc/systemd/system/druid-${service_name}.service"],
+        subscribe => Exec["Reload systemd daemon for new ${service_name} service file"],
+      }
+    }
+    /Debian/: {
+      file { "/etc/init.d/druid-${service_name}":
+        ensure  => file,
+        mode    => 'u=rwx,go=rx',
+        content => $init_content
+      }
+      service { "druid-${service_name}":
+        ensure    => running,
+        enable    => true,
+        provider  => 'debian',
+        require   => File["/etc/init.d/druid-${service_name}"]
+      }
+    }
+    default: {
+      fail("${::operatingsystem} not supported")
+    }
   }
 }
+

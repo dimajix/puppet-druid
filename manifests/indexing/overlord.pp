@@ -246,5 +246,6 @@ class druid::indexing::overlord (
   druid::service { 'overlord':
     config_content  => template("${module_name}/overlord.runtime.properties.erb"),
     service_content => template("${module_name}/druid-overlord.service.erb"),
+    init_content => template("${module_name}/druid-overlord.init.erb"),
   }
 }
