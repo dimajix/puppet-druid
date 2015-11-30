@@ -203,9 +203,7 @@ class druid::indexing::overlord (
   $runner_type                         = hiera("${module_name}::indexing::overlord::runner_type", 'local'),
   $storage_recently_finished_threshold = hiera("${module_name}::indexing::overlord::storage_recently_finished_threshold", 'PT24H'),
   $storage_type                        = hiera("${module_name}::indexing::overlord::storage_type", 'local'),
-) {
-  require druid::indexing
-
+) inherits druid::indexing {
   validate_string(
     $host,
     $service,
