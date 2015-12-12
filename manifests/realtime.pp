@@ -168,5 +168,6 @@ class druid::realtime (
   druid::service { 'realtime':
     config_content  => template("${module_name}/realtime.runtime.properties.erb"),
     service_content => template("${module_name}/druid-realtime.service.erb"),
+    init_content => template("${module_name}/druid-realtime.init.erb"),
   }
 }

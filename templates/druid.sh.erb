@@ -1,0 +1,19 @@
+#! /bin/sh
+
+HADOOP_CONF_DIR="<%= scope.lookupvar("::#{@module_name}::hadoop_confdir") %>"
+
+DRUID_HOME="<%= scope.lookupvar("::#{@module_name}::install_dir") %>/druid"
+DRUID_CONFIG="<%= scope.lookupvar("::#{@module_name}::config_dir") %>"
+DRUID_JAVA_OPTS="<%= @jvm_opts.join(' ') %>"
+DRUID_JAVA_CLASSPATH="${DRUID_HOME}/lib/*:${DRUID_CONFIG}:${HADOOP_CONF_DIR}"
+
+JAVA_HOME=/usr
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+JAVA=$JAVA_HOME/bin/java
+JAVA_OPTS="${DRUID_JAVA_OPTS} -classpath ${DRUID_JAVA_CLASSPATH} io.druid.cli.Main"
+NAME="druid-cli"
+
+[ -r /etc/default/druid ] && . /etc/default/druid
+
+$JAVA $JAVA_OPTS $@
+

@@ -161,5 +161,6 @@ class druid::coordinator (
   druid::service { 'coordinator':
     config_content  => template("${module_name}/coordinator.runtime.properties.erb"),
     service_content => template("${module_name}/druid-coordinator.service.erb"),
+    init_content => template("${module_name}/druid-coordinator.init.erb"),
   }
 }

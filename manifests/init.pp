@@ -406,6 +406,7 @@ class druid (
   $java_pkg                                 = hiera("${module_name}::java_pkg", 'openjdk-7-jre-headless'),
   $install_dir                              = hiera("${module_name}::install_dir", '/usr/local/lib'),
   $config_dir                               = hiera("${module_name}::config_dir", '/etc/druid'),
+  $bin_dir                                  = hiera("${module_name}::bin_dir", '/usr/local/bin'),
   $extensions_remote_repositories           = hiera("${module_name}::extensions_remote_repositories", ['http://repo1.maven.org/maven2/', 'https://metamx.artifactoryonline.com/metamx/pub-libs-releases-local']),
   $extensions_local_repository              = hiera("${module_name}::extensions_local_repository", '~/.m2/repository'),
   $extensions_coordinates                   = hiera_array("${module_name}::extensions_coordinates", []),
@@ -477,6 +478,7 @@ class druid (
   $announcer_type                           = hiera("${module_name}::announcer_type", 'batch'),
   $announcer_segments_per_node              = hiera("${module_name}::announcer_segments_per_node", 50),
   $announcer_max_bytes_per_node             = hiera("${module_name}::announcer_max_bytes_per_node", 524288),
+  $jvm_opts                                 = hiera_array("${module_name}::jvm_opts", ['-Duser.timezone=UTC', '-Dfile.encoding=UTF-8', '-Djava.io.tmpdir=/tmp', '-Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager']),
 ) {
   validate_string(
     $java_pkg,
@@ -530,6 +532,7 @@ class druid (
     $extensions_coordinates,
     $monitoring_monitors,
     $cache_hosts,
+    $jvm_opts
   )
 
   validate_bool(
@@ -551,7 +554,7 @@ class druid (
   validate_integer($announcer_segments_per_node)
   validate_integer($announcer_max_bytes_per_node)
 
-  validate_absolute_path($install_dir, $config_dir, $storage_directory)
+  validate_absolute_path($install_dir, $config_dir, $bin_dir, $storage_directory)
 
   validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)$')
   validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$'])
@@ -573,6 +576,18 @@ class druid (
 
   ensure_packages(['wget', $java_pkg])
 
+  case "${::osfamily}-${::operatingsystem}" {
+    /RedHat-Fedora/: {
+      $hadoop_confdir = '/etc/hadoop'
+    }
+    /Debian|RedHat/: {
+      $hadoop_confdir = '/etc/hadoop/conf'
+    }
+    default: {
+      fail("${::osfamily} (${::operatingsystem}) not supported")
+    }
+  }
+  
   Exec {
     path => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
   }
@@ -620,5 +635,11 @@ class druid (
     ensure  => file,
     content => template("${module_name}/common.runtime.properties.erb"),
     require => File[$config_dir],
+  }
+
+  file { "${bin_dir}/druid":
+    ensure  => file,
+    mode    => 'u=rwx,go=rx',
+    content => template("${module_name}/druid.sh.erb"),
   }
 }

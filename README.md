@@ -51,7 +51,7 @@ This module will not setup all the additional services a full Druid cluster will
 
 * Puppet >= 3.x  (It might work with a previous version, but no guarantees are made).
 * Ruby >= 1.9.3
-* [systemd](http://www.freedesktop.org/wiki/Software/systemd/)
+* [systemd](http://www.freedesktop.org/wiki/Software/systemd/) or Debian init
 
 ### Beginning With Druid
 

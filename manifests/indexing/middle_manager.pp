@@ -194,9 +194,7 @@ class druid::indexing::middle_manager (
   $worker_capacity                 = hiera("${module_name}::indexing::middle_manager::worker_capacity", undef),
   $worker_ip                       = hiera("${module_name}::indexing::middle_manager::worker_ip", 'localhost'),
   $worker_version                  = hiera("${module_name}::indexing::middle_manager::worker_version", '0'),
-) {
-  require druid::indexing
-
+) inherits druid::indexing {
   validate_re($peon_mode, ['^local$', '^remote$'])
   validate_re($task_chat_handler_type, ['^noop$', '^announce$'])
 
@@ -236,5 +234,6 @@ class druid::indexing::middle_manager (
   druid::service { 'middle_manager':
     config_content  => template("${module_name}/middle_manager.runtime.properties.erb"),
     service_content => template("${module_name}/druid-middle_manager.service.erb"),
+    init_content => template("${module_name}/druid-middle_manager.init.erb"),
   }
 }
