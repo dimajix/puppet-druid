@@ -1,12 +1,12 @@
 {
-  "name": "MrAlias-druid",
+  "name": "dimajix-druid",
   "version": "0.2.2",
-  "author": "Tyler Yahn <codingalias@gmail.com>",
+  "author": "Kaya Kupferschmidt <k.kupferschmidt@dimajix.de>",
   "summary": "Sets up and configures a full druid cluster.",
   "license": "Apache-2.0",
-  "source": "https://github.com/MrAlias/druid.git",
-  "project_page": "https://github.com/MrAlias/druid",
-  "issues_url": "https://github.com/MrAlias/druid/issues",
+  "source": "https://github.com/dimajix/vagrant-druid.git",
+  "project_page": "https://github.com/dimajix/vagrant-druid",
+  "issues_url": "https://github.com/dimajix/vagrant-druid/issues",
   "dependencies": [
     {"name":"puppetlabs/stdlib","version_requirement":">= 4.0.0 < 5.0.0"}
   ],
@@ -15,6 +15,12 @@
       "operatingsystem": "Debian",
       "operatingsystemreleases": [
         "8"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.04"
       ]
     }
   ]
