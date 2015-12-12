@@ -403,6 +403,7 @@
 #
 class druid (
   $version                                  = hiera("${module_name}::version", '0.8.1'),
+  $repository                               = hiera("${module_name}::repository", 'http://static.druid.io/artifacts/releases/'),
   $java_pkg                                 = hiera("${module_name}::java_pkg", 'openjdk-7-jre-headless'),
   $install_dir                              = hiera("${module_name}::install_dir", '/usr/local/lib'),
   $config_dir                               = hiera("${module_name}::config_dir", '/etc/druid'),
@@ -556,7 +557,7 @@ class druid (
 
   validate_absolute_path($install_dir, $config_dir, $bin_dir, $storage_directory)
 
-  validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)$')
+  validate_re($version, '^([0-9]+)\.([0-9]+)\.([0-9]+)(-[-+.a-zA-Z0-9]+)?$')
   validate_re($request_logging_type, ['^noop$', '^file$', '^emitter$'])
   validate_re($storage_type, ['^local$', '^noop$', '^s3$', '^hdfs$', '^c$'])
   validate_re($metadata_storage_type, ['mysql', 'postgres', 'derby'])
@@ -614,7 +615,7 @@ class druid (
     require => Exec["Create ${config_dir}"],
   }
 
-  $url = "http://static.druid.io/artifacts/releases/druid-${version}-bin.tar.gz"
+  $url = "${repository}/druid-${version}-bin.tar.gz"
   exec { "Download and untar druid-${version}":
     command => "wget -O - ${url} | tar zx",
     creates => "${install_dir}/druid-${version}",

@@ -1,6 +1,6 @@
 {
   "name": "dimajix-druid",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "author": "Kaya Kupferschmidt <k.kupferschmidt@dimajix.de>",
   "summary": "Sets up and configures a full druid cluster.",
   "license": "Apache-2.0",
