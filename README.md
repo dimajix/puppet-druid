@@ -1,5 +1,7 @@
 # druid
 
+This module is a fork of the original Puppet module MrAlias/druid by Tyler Yahn in order to improve support for Ubuntu as the hosting operating system.
+
 #### Table of Contents
 
 1. [Module Description](#module-description)
@@ -37,7 +39,7 @@
 
 * Installs the Druid jars to the local filesystem.
 * Created Druid configuration files on the local filesystem.
-* Creates and manages a [systemd](http://www.freedesktop.org/wiki/Software/systemd/) service for each Druid service to run.
+* Creates and manages a init.d service for each Druid service to run.
 
 ### What Druid Does Not Manage
 
@@ -51,7 +53,7 @@ This module will not setup all the additional services a full Druid cluster will
 
 * Puppet >= 3.x  (It might work with a previous version, but no guarantees are made).
 * Ruby >= 1.9.3
-* [systemd](http://www.freedesktop.org/wiki/Software/systemd/) or Debian init
+* Debian init
 
 ### Beginning With Druid
 
@@ -1600,6 +1602,7 @@ Required content of the systemd service file.
 
 ## Limitations
 
-The module has been designed to run on a Debian based system using systemd as a service manager.
+The module has been designed to run on a Ubuntu based system using init.d as a service manager.
 
-Testing is currently only being done on Debian 8 (Jessie).
+Testing is currently only being done on Ubuntu 14.04 (Jessie).
+
