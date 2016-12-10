@@ -403,7 +403,7 @@
 #
 class druid (
   $version                                  = hiera("${module_name}::version", '0.8.1'),
-  $repository                               = hiera("${module_name}::repository", 'http://static.druid.io/artifacts/releases/'),
+  $repository                               = hiera("${module_name}::repository", 'http://static.druid.io/artifacts/releases'),
   $java_pkg                                 = hiera("${module_name}::java_pkg", 'openjdk-7-jre-headless'),
   $install_dir                              = hiera("${module_name}::install_dir", '/usr/local/lib'),
   $config_dir                               = hiera("${module_name}::config_dir", '/etc/druid'),
